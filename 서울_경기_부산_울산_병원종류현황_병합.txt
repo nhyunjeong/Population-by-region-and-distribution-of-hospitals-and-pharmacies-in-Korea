@@ -1,0 +1,49 @@
+from matplotlib import font_manager, rc 
+font_name = font_manager.FontProperties(fname="c:/Windows/Fonts/malgun.ttf").get_name() 
+rc('font', family=font_name) 
+import pandas as pd 
+import  matplotlib.pyplot  as  plt  
+import  seaborn  as  sns
+import numpy as np
+
+# 경기지역 종합병원수
+hospital = pd.read_csv("c:\\data\\병원정보서비스216.csv",encoding = "ANSI")
+kkd = hospital[['종별코드명','시도코드명']][hospital['시도코드명'] == '경기']
+kkd = kkd.groupby('종별코드명')['시도코드명'].count().reset_index().sort_values('시도코드명', ascending =False)
+kkd.columns =['k_병원', '경기도']
+k = kkd[:][kkd['k_병원'].isin(['의원','치과의원','한의원','병원','요양병원'])].sort_values('k_병원', ascending =True)
+k.reset_index(drop=True, inplace =True)
+
+# 서울지역 종합병원수
+hospital = pd.read_csv("c:\\data\\병원정보서비스216.csv",encoding = "ANSI")
+s = hospital[['종별코드명','시도코드명']][hospital['시도코드명'] == '서울']
+s = s.groupby('종별코드명')['시도코드명'].count().reset_index().sort_values('시도코드명', ascending =False)
+s.columns =['s_병원', '서울']
+s=s[:][s['s_병원'].isin(['의원','치과의원','한의원','병원','요양병원'])].sort_values('s_병원', ascending =True)
+s.reset_index(drop=True, inplace =True)
+
+# 부산지역 종합병원수
+hospital = pd.read_csv("c:\\data\\병원정보서비스216.csv",encoding = "ANSI")
+busan = hospital[['종별코드명','시도코드명']][hospital['시도코드명'] == '부산']
+busan = busan.groupby('종별코드명')['시도코드명'].count().reset_index().sort_values('시도코드명', ascending =False)
+busan.columns =['b_병원', '부산']
+b = busan[:][busan['b_병원'].isin(['의원','치과의원','한의원','병원','요양병원'])].sort_values('b_병원', ascending =True)
+b.reset_index(drop=True, inplace =True)
+
+# 울산지역 종합병원수
+hospital = pd.read_csv("c:\\data\\병원정보서비스216.csv",encoding = "ANSI")
+ulsan = hospital[['종별코드명','시도코드명']][hospital['시도코드명'] == '울산']
+ulsan = ulsan.groupby('종별코드명')['시도코드명'].count().reset_index().sort_values('시도코드명', ascending =False)
+ulsan.columns =['u_병원', '울산']
+u = ulsan[:][ulsan['u_병원'].isin(['의원','치과의원','한의원','병원','요양병원'])].sort_values('u_병원', ascending =True)
+u.reset_index(drop=True, inplace =True)
+
+# 연결하기  
+result = pd.concat([k,s,b,u],axis = 1 )
+result.set_index(['k_병원'],inplace =True)
+
+# 스타일 변경
+plt.style.use('ggplot') 
+
+result.plot.bar(rot= False, figsize =(13,9))
+plt.title('서울/경기/부산/울산 지역별 \n 상위권 병원 종류 비교', size = 20)
