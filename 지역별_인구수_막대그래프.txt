@@ -1,0 +1,31 @@
+from matplotlib import font_manager, rc 
+font_name = font_manager.FontProperties(fname="c:/Windows/Fonts/malgun.ttf").get_name() 
+rc('font', family=font_name) 
+import pandas as pd 
+import  matplotlib.pyplot  as  plt  
+
+x = pd.read_csv("c:\\data\\연령별인구현황21-12월.csv",encoding ='ansi')
+x = x.iloc[:,:14]
+x['행정구역1']= x['행정구역'].apply(city).dropna()
+x2 = x.groupby('행정구역1').aggregate(sum)           # 행정구역별로 모든 컬럼들의 합 
+x2.drop(['연령구간인구수'] ,axis =1,inplace =True)    # 결측치 빼기
+x2 = x2.reset_index().sort_values('총인구수', ascending =False) # 총인구수 높은순서대로 
+x3 = x2[['행정구역1','총인구수']]   # 그래프그릴 컬럼만 추출 
+x3 = x3.set_index('행정구역1') # 원형그래프 y 축 출력 위한 index 설정 
+
+# 그래프 스타일
+plt.style.use('ggplot')  
+# 그래프 그리기 
+x3 = x3.plot.barh(color = 'b', figsize = (13,8), width = 0.7, fontsize = 10)
+plt.xlabel('총인구수(1단위 천만)')
+plt.ylabel('지역')
+plt.xlim([0,35000000]) 
+
+# 그래프 위 숫자표시 
+for p in x3.patches :
+    x, y, width, height = p.get_bbox().bounds
+    x3.text(width*1.02, y+height/2,"%d명"%width, va='center')
+    
+plt.title('< 지역별 총 인구수 >', size = 20) # 그래프 타이틀 
+plt.savefig("c:\\data\\graph\\지역별 총 인구수.png", dpi=200)
+plt.show()
