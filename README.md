@@ -1,4 +1,8 @@
 # hospitals-and-pharmacies-in-Korea
+환경 
+- jupyter notebook 
+- python 3.8.3
+
 ## ※ 목차 
 
 **1. 데이터 출처**  
